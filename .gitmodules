@@ -1,0 +1,15 @@
+[submodule "lava/third-party/glm"]
+	path = lava/third-party/glm
+	url = https://github.com/g-truc/glm.git
+[submodule "lava/third-party/VulkanMemoryAllocator-Hpp"]
+	path = lava/third-party/VulkanMemoryAllocator-Hpp
+	url = https://github.com/malte-v/VulkanMemoryAllocator-Hpp.git
+[submodule "lava/third-party/stb"]
+	path = lava/third-party/stb
+	url = https://github.com/nothings/stb.git
+[submodule "lava/third-party/tinyobjloader"]
+	path = lava/third-party/tinyobjloader
+	url = https://github.com/syoyo/tinyobjloader.git
+[submodule "lava/third-party/gli"]
+	path = lava/third-party/gli
+	url = https://github.com/g-truc/gli.git

@@ -1,0 +1,294 @@
+#version 450
+#extension GL_ARB_separate_shader_objects : enable
+#define MAX_PARTICLE_FORCES_COUNT 10
+#define MAX_PARTICLE_PROPERTIES_COUNT 10
+#define PARTICLES_PER_WORKGROUP 256
+#define PARTICLES_PER_WORKGROUP_X 16
+#define PARTICLES_PER_WORKGROUP_Y 16
+
+layout(local_size_x = PARTICLES_PER_WORKGROUP_X, local_size_y = PARTICLES_PER_WORKGROUP_Y) in;
+
+layout(set = 0, binding = 0, rgba32f) uniform imageBuffer particles;
+
+struct Force
+{
+    vec4 direction;// direction.w is direction type.
+    vec4 source;// source.w is time after which force will be applied to particle.
+    vec4 radius;//radius.w is radius type.
+    vec2 force;// info.x is amount of force, info.y is force type
+};
+
+struct ParticleProperty
+{
+    vec4 color;
+    vec4 color_decay_rate;
+    vec4 source;// source.w is particle mass
+    vec4 radius;// radius.w is radius type;
+    vec2 life;// life.x is lifetime, life.y is decay rate.
+    vec2 death;// death.x probability to stay dead, death.y probability decay rate.
+    uint force_count;
+    Force forces[MAX_PARTICLE_FORCES_COUNT];
+};
+
+layout(set = 0, binding = 1) uniform ParticleUniform
+{
+    float delta_time;
+    float time;
+    uint particle_count;
+    uint type_count;
+    ParticleProperty types[MAX_PARTICLE_PROPERTIES_COUNT];
+} particle_info;
+
+// Gold Noise ©2015 dcerisano@standard3d.com
+// - based on the Golden Ratio
+// - uniform normalized distribution
+// - fastest static noise generator function (also runs at low precision)
+
+float PHI = 1.61803398874989484820459;// Φ = Golden Ratio
+
+float gold_noise(in vec2 xy, in float seed)
+{
+    return clamp(fract(tan(distance(xy*PHI, xy)*seed)*xy.x), 0.f, 1.f);
+}
+
+float seed = 0;
+
+void init_seed()
+{
+    seed = particle_info.time;
+}
+
+void update_seed()
+{
+    seed += 2 * particle_info.delta_time;
+}
+
+
+float uniform_real_rand(in float min, in float max)
+{
+    update_seed();
+    return gold_noise(vec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y), seed) * (max - min) + min;
+}
+
+int uniform_int_rand(in int min, in int max)
+{
+    update_seed();
+    return int(round(gold_noise(vec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y), seed) * (max - min) + min));
+}
+
+bool decide(float prob)
+{
+    update_seed();
+    return gold_noise(vec2(gl_GlobalInvocationID.x, gl_GlobalInvocationID.y), seed) <= prob;
+}
+
+vec3 linear_rand(in float min, in float max)
+{
+    vec3 result;
+    result.x = uniform_real_rand(min, max);
+    result.y = uniform_real_rand(min, max);
+    result.z = uniform_real_rand(min, max);
+    return result;
+}
+
+vec3 spherical_rand(in float radius)
+{
+    float theta = uniform_real_rand(0., 6.283185307179586476925286766559);
+    float phi = acos(uniform_real_rand(-1.0, 1.0));
+
+    float x = sin(phi) * cos(theta);
+    float y = sin(phi) * sin(theta);
+    float z = cos(phi);
+
+    return vec3(x, y, z) * radius;
+}
+
+float max3 (in vec3 v)
+{
+    return max (max (v.x, v.y), v.z);
+}
+bool is_inside_sphere(in vec3 point, in vec3 center, in vec3 radius)
+{
+    bool is_x_inside = false;
+    bool is_y_inside = false;
+    bool is_z_inside = false;
+
+    float d = distance(center, point);
+    float r = max3(radius);
+
+    if(radius.x < 0 || d <= r) { is_x_inside = true; }
+    if(radius.y < 0 || d <= r) { is_y_inside = true; }
+    if(radius.z < 0 || d <= r) { is_z_inside = true; }
+
+    return is_x_inside && is_y_inside && is_z_inside;
+}
+
+bool is_inside_box(in vec3 point, in vec3 center, in vec3 radius)
+{
+    bool is_x_inside = false;
+    bool is_y_inside = false;
+    bool is_z_inside = false;
+
+    if(radius.x < 0 || (point.x > center.x - radius.x && point.x < center.x + radius.x)) { is_x_inside = true; }
+    if(radius.y < 0 || (point.y > center.y - radius.y && point.y < center.y + radius.y)) { is_y_inside = true; }
+    if(radius.z < 0 || (point.z > center.z - radius.z && point.z < center.z + radius.z)) { is_z_inside = true; }
+
+    return is_x_inside && is_y_inside && is_z_inside;
+}
+
+bool check_if_point_inside_radius(in vec3 point, in vec3 center, in vec4 radius)
+{
+    return radius.w == 0 ? is_inside_box(point, center, radius.xyz) : is_inside_sphere(point, center, radius.xyz);
+}
+
+
+vec3 calculate_velocity_impulse(in float mass, in vec3 source, in float direction_type, in vec3 direction, in vec3 position, in float force)
+{
+    if (direction_type == 0) return (normalize(direction.xyz) * force) / mass;
+    else return (normalize(position - source) * force) / mass;
+}
+
+vec3 calculate_velocity_force(in float mass, in vec3 source, in float direction_type, in vec3 direction, in vec3 position, in float force)
+{
+    if (direction_type == 0) return (normalize(direction.xyz) * force * particle_info.delta_time) / mass;
+    else return (normalize(position - source) * force * particle_info.delta_time) / mass;
+}
+
+vec3 calculate_velocity_acceleration(in vec3 source, in float direction_type, in vec3 direction, in vec3 position, in float force)
+{
+    if (direction_type == 0) return normalize(direction.xyz) * force * particle_info.delta_time;
+    else return normalize(position - source) * force * particle_info.delta_time;
+}
+
+vec3 calculate_velocity(in vec3 source, in float direction_type, in vec3 direction, in vec3 position, in float force)
+{
+    if (direction_type == 0) return normalize(direction.xyz) * force;
+    else return normalize(position - source) * force;
+}
+
+vec3 calculate_total_velocity_gain(in int index, in float time, in vec3 position)
+{
+    vec3 result = vec3(0);
+    for (int i = 0; i < particle_info.types[index].force_count; ++i)
+    {
+        if(check_if_point_inside_radius(position, particle_info.types[index].forces[i].source.xyz, particle_info.types[index].forces[i].radius))
+        {
+            if (particle_info.types[index].forces[i].force.y == 0)
+            {
+                if (particle_info.types[index].forces[i].source.w <= time && particle_info.types[index].forces[i].source.w > time - particle_info.delta_time)
+                {
+                    result += calculate_velocity_impulse(
+                    particle_info.types[index].source.w,
+                    particle_info.types[index].forces[i].source.xyz,
+                    particle_info.types[index].forces[i].direction.w,
+                    particle_info.types[index].forces[i].direction.xyz,
+                    position,
+                    particle_info.types[index].forces[i].force.x);
+                }
+            }
+            if (particle_info.types[index].forces[i].force.y == 1)
+            {
+                if (particle_info.types[index].forces[i].source.w >= time)
+                {
+                    result += calculate_velocity_force(
+                    particle_info.types[index].source.w,
+                    particle_info.types[index].forces[i].source.xyz,
+                    particle_info.types[index].forces[i].direction.w,
+                    particle_info.types[index].forces[i].direction.xyz,
+                    position,
+                    particle_info.types[index].forces[i].force.x);
+                }
+            }
+            if (particle_info.types[index].forces[i].force.y == 2)
+            {
+                if (particle_info.types[index].forces[i].source.w >= time)
+                {
+                    result += calculate_velocity_acceleration(
+                    particle_info.types[index].forces[i].source.xyz,
+                    particle_info.types[index].forces[i].direction.w,
+                    particle_info.types[index].forces[i].direction.xyz,
+                    position,
+                    particle_info.types[index].forces[i].force.x);
+                }
+            }
+            if (particle_info.types[index].forces[i].force.y == 3)
+            {
+                if (particle_info.types[index].forces[i].source.w <= time && particle_info.types[index].forces[i].source.w > time - particle_info.delta_time)
+                {
+                    result += calculate_velocity(
+                    particle_info.types[index].forces[i].source.xyz,
+                    particle_info.types[index].forces[i].direction.w,
+                    particle_info.types[index].forces[i].direction.xyz,
+                    position,
+                    particle_info.types[index].forces[i].force.x);
+                }
+            }
+        }
+    }
+
+    return result;
+}
+
+void main()
+{
+    int index = int(gl_WorkGroupID.x * PARTICLES_PER_WORKGROUP + gl_LocalInvocationIndex);
+    if (index >= particle_info.particle_count) return;
+
+    init_seed();
+
+    vec4 position = imageLoad(particles, index * 3);
+    vec4 color = imageLoad(particles, index * 3 + 1);
+    vec4 velocity = imageLoad(particles, index * 3 + 2);
+
+    int type = int(position.w);
+    if (velocity.w > 0)
+    {
+        if (velocity.w - particle_info.types[type].life.y * particle_info.delta_time <= 0)
+        {
+            velocity.w = 0;
+            color.w = 0;
+            position.x = 0;
+        }
+        else
+        {
+            velocity = vec4(velocity.xyz + calculate_total_velocity_gain(type, velocity.w, position.xyz), velocity.w);
+            position = vec4(position.xyz + velocity.xyz * particle_info.delta_time, position.w);
+            velocity.w -= particle_info.types[type].life.y * particle_info.delta_time;
+            color -= particle_info.types[type].color_decay_rate * particle_info.delta_time;
+        }
+    }
+    else
+    {
+        if(position.x > uniform_real_rand(0.1, 0.5))
+        {
+            position.x = 0;
+            if (decide(particle_info.types[type].death.x)) //* pow(particle_info.types[type].death.y, velocity.w * -1)
+            {
+                velocity.w -= particle_info.delta_time;
+            }
+            else
+            {
+                type = uniform_int_rand(0, int(particle_info.type_count - 1));
+                float radius = max3(particle_info.types[type].radius.xyz);
+                if (particle_info.types[type].radius.w == 0)
+                {
+                    position = vec4(particle_info.types[type].source.xyz + clamp(linear_rand(-radius, radius), -particle_info.types[type].radius.xyz, particle_info.types[type].radius.xyz), float(type));
+                }
+                else
+                {
+                    position = vec4(particle_info.types[type].source.xyz + clamp(spherical_rand(radius), -particle_info.types[type].radius.xyz, particle_info.types[type].radius.xyz), float(type));
+                }
+                color = particle_info.types[type].color;
+                velocity = vec4(vec3(0), particle_info.types[type].life.x);
+            }
+        }
+        else
+        {
+            position.x += particle_info.delta_time;
+        }
+    }
+
+    imageStore(particles, index * 3, position);
+    imageStore(particles, index * 3 + 1, color);
+    imageStore(particles, index * 3 + 2, velocity);
+}
