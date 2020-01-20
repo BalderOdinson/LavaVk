@@ -13,3 +13,6 @@
 [submodule "lava/third-party/gli"]
 	path = lava/third-party/gli
 	url = https://github.com/g-truc/gli.git
+[submodule "lava/third-party/glfw"]
+	path = lava/third-party/glfw
+	url = https://github.com/glfw/glfw.git
