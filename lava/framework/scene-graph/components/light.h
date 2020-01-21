@@ -5,7 +5,7 @@
 #ifndef LAVAVK_LIGHT_H
 #define LAVAVK_LIGHT_H
 
-#include "lava/third-party/glm.h"
+#include "lava/framework/gl_includer.h"
 #include "lava/framework/scene-graph/component.h"
 #include "lava/framework/scene-graph/node.h"
 

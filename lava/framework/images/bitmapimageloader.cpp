@@ -4,7 +4,7 @@
 
 #include <iostream>
 #include "bitmapimageloader.h"
-#include "lava/third-party/stb.h"
+#include <stb_image.h>
 
 gli::texture LavaVk::BitmapImageLoader::load(std::string_view filename)
 {

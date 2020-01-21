@@ -6,7 +6,7 @@
 #define LAVAVK_OBJECTFILEVERTEXSOURCE_H
 
 #include "vertexsource.h"
-#include "lava/third-party/glm.h"
+#include "lava/framework/gl_includer.h"
 #include "lava/framework/scene-graph/components/material.h"
 
 namespace LavaVk

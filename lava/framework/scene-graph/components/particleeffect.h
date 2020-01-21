@@ -8,8 +8,8 @@
 #include <vector>
 #include <unordered_map>
 #include <random>
+#include "lava/framework/gl_includer.h"
 #include "lava/framework/meshes/vertexoptions.h"
-#include "lava/third-party/glm.h"
 #include "lava/framework/scene-graph/component.h"
 #include "lava/framework/core/buffer.h"
 #include "lava/framework/scene-graph/node.h"

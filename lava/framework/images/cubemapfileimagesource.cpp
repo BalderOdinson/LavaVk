@@ -3,7 +3,7 @@
 //
 
 #include "cubemapfileimagesource.h"
-#include "lava/third-party/stb.h"
+#include <stb_image.h>
 
 LavaVk::CubemapFileImageSource::CubemapFileImageSource(std::string_view right, std::string_view left,
                                                        std::string_view up, std::string_view down,

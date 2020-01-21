@@ -6,7 +6,7 @@
 #define LAVAVK_DEFAULTIMAGESOURCE_H
 
 #include "imagesource.h"
-#include "lava/third-party/glm.h"
+#include "lava/framework/gl_includer.h"
 
 namespace LavaVk
 {

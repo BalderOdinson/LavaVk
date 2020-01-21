@@ -6,7 +6,7 @@
 #define LAVAVK_TRANSFORM_H
 
 #include "lava/framework/scene-graph/component.h"
-#include "lava/third-party/glm.h"
+#include "lava/framework/gl_includer.h"
 
 namespace LavaVk
 {

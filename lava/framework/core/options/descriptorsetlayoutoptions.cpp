@@ -3,7 +3,7 @@
 //
 
 #include "descriptorsetlayoutoptions.h"
-#include "lava/third-party/glm.h"
+#include "lava/framework/gl_includer.h"
 
 LavaVk::Core::DescriptorSetLayoutOptions::DescriptorSetLayoutOptions(std::vector<ShaderResource> setResources)
         : setResources(std::move(setResources))

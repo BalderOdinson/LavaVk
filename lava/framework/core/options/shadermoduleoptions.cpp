@@ -3,7 +3,7 @@
 //
 
 #include "shadermoduleoptions.h"
-#include "lava/third-party/glm.h"
+#include "lava/framework/gl_includer.h"
 #include <utility>
 
 LavaVk::Core::ShaderModuleOptions::ShaderModuleOptions(std::string filename, vk::ShaderStageFlagBits stage,

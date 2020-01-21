@@ -6,7 +6,7 @@
 #define LAVAVK_MESH_H
 
 #include <unordered_set>
-#include "lava/third-party/glm.h"
+#include "lava/framework/gl_includer.h"
 #include "lava/framework/scene-graph/component.h"
 #include "lava/framework/scene-graph/node.h"
 #include "lava/framework/meshes/meshsource.h"

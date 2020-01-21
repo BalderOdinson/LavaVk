@@ -5,7 +5,7 @@
 #ifndef LAVAVK_PBRMATERIAL_H
 #define LAVAVK_PBRMATERIAL_H
 
-#include "lava/third-party/glm.h"
+#include "lava/framework/gl_includer.h"
 #include "material.h"
 
 namespace LavaVk

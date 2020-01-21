@@ -6,7 +6,7 @@
 #define LAVAVK_SUBPASS_H
 
 #include <unordered_map>
-#include "lava/third-party/glm.h"
+#include "lava/framework/gl_includer.h"
 #include "lava/framework/object.h"
 #include "lava/framework/dependency-injection/dicontainer.h"
 #include "lava/framework/dependency-injection/injectioncontext.h"

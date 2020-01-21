@@ -5,7 +5,8 @@
 #ifndef LAVAVK_AABB_H
 #define LAVAVK_AABB_H
 
-#include "lava/third-party/glm.h"
+#include <vector>
+#include "lava/framework/gl_includer.h"
 #include "lava/framework/scene-graph/component.h"
 
 namespace LavaVk

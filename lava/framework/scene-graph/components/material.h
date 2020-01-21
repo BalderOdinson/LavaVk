@@ -7,7 +7,7 @@
 
 #include <unordered_map>
 #include "lava/framework/scene-graph/component.h"
-#include "lava/third-party/glm.h"
+#include "lava/framework/gl_includer.h"
 #include "texture.h"
 
 namespace LavaVk

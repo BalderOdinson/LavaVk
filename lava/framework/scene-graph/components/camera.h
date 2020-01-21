@@ -5,7 +5,7 @@
 #ifndef LAVAVK_CAMERA_H
 #define LAVAVK_CAMERA_H
 
-#include "lava/third-party/glm.h"
+#include "lava/framework/gl_includer.h"
 #include "lava/framework/scene-graph/component.h"
 #include "lava/framework/scene-graph/node.h"
 

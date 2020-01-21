@@ -12,8 +12,9 @@
 #include <string>
 #include <cstdarg>
 #include <fstream>
+#include "gl_includer.h"
+#include <stb_image.h>
 #include "object.h"
-#include "lava/third-party/glm.h"
 #include "lava/framework/dependency-injection/resolveid.h"
 
 namespace LavaVk

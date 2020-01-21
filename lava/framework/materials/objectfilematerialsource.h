@@ -6,7 +6,7 @@
 #define LAVAVK_OBJECTFILEMATERIALSOURCE_H
 
 #include "materialsource.h"
-#include "lava/third-party/tiny.h"
+#include <tiny_obj_loader.h>
 
 namespace LavaVk
 {

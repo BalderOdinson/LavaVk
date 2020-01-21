@@ -3,7 +3,7 @@
 //
 
 #include "objectfilevertexsource.h"
-#include "lava/third-party/tiny.h"
+#include <tiny_obj_loader.h>
 
 LavaVk::ObjectFileVertexSource::ObjectFileVertexSource(std::string_view filename, bool calculateNormals,
                                                        bool calculateTangent, bool calculateBitangent) : filename(

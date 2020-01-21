@@ -7,7 +7,7 @@
 
 #include <vulkan/vulkan.hpp>
 #include <utility>
-#include "lava/third-party/vma.h"
+#include <vk_mem_alloc.hpp>
 #include "lava/framework/object.h"
 #include "lava/framework/dependency-injection/dicontainer.h"
 #include "lava/framework/dependency-injection/injectioncontext.h"

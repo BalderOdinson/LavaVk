@@ -6,7 +6,7 @@
 #define LAVAVK_BUFFERPOOLOPTIONS_H
 
 #include <vulkan/vulkan.hpp>
-#include "lava/third-party/vma.h"
+#include <vk_mem_alloc.hpp>
 #include "lava/framework/object.h"
 
 namespace LavaVk

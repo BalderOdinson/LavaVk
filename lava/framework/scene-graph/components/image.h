@@ -6,7 +6,7 @@
 #define LAVAVK_SCENEIMAGE_H
 
 #include <vulkan/vulkan.hpp>
-#include <gli/texture.hpp>
+#include <gli/gli.hpp>
 #include "lava/framework/images/mipmapsoptions.h"
 #include "lava/framework/scene-graph/component.h"
 #include "lava/framework/core/image.h"

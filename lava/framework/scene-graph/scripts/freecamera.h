@@ -6,7 +6,7 @@
 #define LAVAVK_FREECAMERA_H
 
 #include <unordered_map>
-#include "lava/third-party/glm.h"
+#include "lava/framework/gl_includer.h"
 #include "lava/framework/platform/window.h"
 #include "lava/framework/platform/inputmanager.h"
 #include "lava/framework/scene-graph/script.h"
