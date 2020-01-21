@@ -3,7 +3,6 @@
 //
 
 #include "objectfilemeshsource.h"
-#include <tiny_obj_loader.h>
 #include "objectfilevertexsource.h"
 #include "lava/framework/scene-graph/components/pbrmaterial.h"
 #include "lava/framework/materials/objectfilematerialsource.h"

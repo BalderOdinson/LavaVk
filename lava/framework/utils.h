@@ -13,7 +13,6 @@
 #include <cstdarg>
 #include <fstream>
 #include "gl_includer.h"
-#include <stb_image.h>
 #include "object.h"
 #include "lava/framework/dependency-injection/resolveid.h"
 

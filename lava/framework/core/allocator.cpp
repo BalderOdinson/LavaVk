@@ -2,6 +2,8 @@
 // Created by dorian on 08. 12. 2019..
 //
 
+#define VMA_IMPLEMENTATION
+#include <vk_mem_alloc.hpp>
 #include "allocator.h"
 #include "options/allocatoroptions.h"
 

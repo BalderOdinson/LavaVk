@@ -6,7 +6,6 @@
 #define LAVAVK_BUFFER_H
 
 #include <vulkan/vulkan.hpp>
-#include <vk_mem_alloc.hpp>
 #include "allocation.h"
 #include "lava/framework/dependency-injection/dicontainer.h"
 #include "lava/framework/dependency-injection/injectioncontext.h"

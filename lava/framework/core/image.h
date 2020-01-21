@@ -6,7 +6,6 @@
 #define LAVAVK_IMAGE_H
 
 #include <vulkan/vulkan.hpp>
-#include <vk_mem_alloc.hpp>
 #include "allocation.h"
 #include "lava/framework/event-system/event.h"
 #include "lava/framework/dependency-injection/dicontainer.h"

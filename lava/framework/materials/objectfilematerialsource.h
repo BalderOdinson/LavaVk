@@ -6,7 +6,7 @@
 #define LAVAVK_OBJECTFILEMATERIALSOURCE_H
 
 #include "materialsource.h"
-#include <tiny_obj_loader.h>
+#include "lava/framework/meshes/objectfilevertexsource.h"
 
 namespace LavaVk
 {

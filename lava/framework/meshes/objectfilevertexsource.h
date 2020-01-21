@@ -7,6 +7,7 @@
 
 #include "vertexsource.h"
 #include "lava/framework/gl_includer.h"
+#include <tiny_obj_loader.h>
 #include "lava/framework/scene-graph/components/material.h"
 
 namespace LavaVk

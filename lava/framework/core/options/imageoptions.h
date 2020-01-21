@@ -6,7 +6,7 @@
 #define LAVAVK_IMAGEOPTIONS_H
 
 #include <vulkan/vulkan.hpp>
-#include <vk_mem_alloc.hpp>
+#include "lava/framework/core/allocator.h"
 #include "allocationoption.h"
 
 namespace LavaVk::Core

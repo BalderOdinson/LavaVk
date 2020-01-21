@@ -5,7 +5,6 @@
 #ifndef LAVAVK_ALLOCATION_H
 #define LAVAVK_ALLOCATION_H
 
-#include <vk_mem_alloc.hpp>
 #include "lava/framework/object.h"
 #include "allocator.h"
 

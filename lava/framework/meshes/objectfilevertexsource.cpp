@@ -3,6 +3,7 @@
 //
 
 #include "objectfilevertexsource.h"
+#define TINYOBJLOADER_IMPLEMENTATION
 #include <tiny_obj_loader.h>
 
 LavaVk::ObjectFileVertexSource::ObjectFileVertexSource(std::string_view filename, bool calculateNormals,
