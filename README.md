@@ -10,7 +10,7 @@ Engine/Framework created using Vulkan API
   - [Windows](#windows)
   - [Linux](#linux)
 - [Usage](#usage)
-- [Future plans]
+- [Future plans](#future-plans)
 - [License](#license)
 
 ## Introduction
