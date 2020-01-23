@@ -12,6 +12,7 @@
 #include <string>
 #include <cstdarg>
 #include <fstream>
+#include <optional>
 #include "gl_includer.h"
 #include "object.h"
 #include "lava/framework/dependency-injection/resolveid.h"
@@ -115,7 +116,7 @@ namespace LavaVk
         {
             if constexpr (is_shared_ptr<Current>::value)
             {
-                if constexpr (std::is_base_of<Object, typename std::decay<decltype(*std::get<0>(key))>::type>::value)
+                if constexpr (std::is_base_of<Object, typename std::decay<decltype(*(std::get<0>(key).get()))>::type>::value)
                     glm::detail::hash_combine(result, std::get<0>(key)->getHashCode());
                 else
                     glm::detail::hash_combine(result, std::hash<Current>()(std::get<0>(key)));
@@ -143,6 +144,40 @@ namespace LavaVk
     };
 
 }
+
+/*
+ * asprintf, vasprintf:
+ * MSVC does not implement these, thus we implement them here
+ * GNU-C-compatible compilers implement these with the same names, thus we
+ * don't have to do anything
+ */
+#ifdef _MSC_VER
+inline int vasprintf(char** strp, const char* format, va_list ap)
+{
+	int len = _vscprintf(format, ap);
+	if (len == -1)
+		return -1;
+	char* str = (char*)malloc((size_t)len + 1);
+	if (!str)
+		return -1;
+	int retval = vsnprintf(str, len + 1, format, ap);
+	if (retval == -1) {
+		free(str);
+		return -1;
+	}
+	*strp = str;
+	return retval;
+}
+
+inline int asprintf(char** strp, const char* format, ...)
+{
+	va_list ap;
+	va_start(ap, format);
+	int retval = vasprintf(strp, format, ap);
+	va_end(ap);
+	return retval;
+}
+#endif
 
 namespace std
 {

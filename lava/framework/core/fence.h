@@ -6,6 +6,7 @@
 #define LAVAVK_FENCE_H
 
 #include <vulkan/vulkan.hpp>
+#include <limits>
 #include <numeric>
 #include "lava/framework/object.h"
 #include "lava/framework/dependency-injection/dicontainer.h"
@@ -25,14 +26,14 @@ namespace LavaVk::Core
         Fence &operator=(const Fence &) = delete;
         Fence &operator=(Fence &&) = delete;
 
-        bool wait(uint32_t timeout = std::numeric_limits<uint32_t>::max()) const;
+        bool wait(uint64_t timeout = (std::numeric_limits<uint64_t>::max)()) const;
         void reset() const;
 
         vk::Fence getHandle() const;
 
         template<typename BeginFences, typename EndFences>
         static bool
-        waitForFences(BeginFences begin, EndFences end, uint64_t timeout = std::numeric_limits<uint64_t>::max());
+        waitForFences(BeginFences begin, EndFences end, uint64_t timeout = (std::numeric_limits<uint64_t>::max)());
 
         template<typename BeginFences, typename EndFences>
         static void resetFences(BeginFences begin, EndFences end);

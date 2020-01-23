@@ -5,6 +5,7 @@
 #ifndef LAVAVK_INSTANCEOPTIONS_H
 #define LAVAVK_INSTANCEOPTIONS_H
 
+#include <array>
 #include <vector>
 #include "lava/framework/object.h"
 

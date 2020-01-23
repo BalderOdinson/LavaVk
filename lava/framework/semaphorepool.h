@@ -5,12 +5,11 @@
 #ifndef LAVAVK_SEMAPHOREPOOL_H
 #define LAVAVK_SEMAPHOREPOOL_H
 
-#include <lava/framework/core/semaphore.h>
 #include "object.h"
 #include "dependency-injection/dicontainer.h"
 #include "dependency-injection/injectioncontext.h"
 #include "core/device.h"
-#include "semaphore.h"
+#include "lava/framework/core/semaphore.h"
 
 namespace LavaVk
 {

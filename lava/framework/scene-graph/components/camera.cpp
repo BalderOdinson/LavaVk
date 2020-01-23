@@ -4,6 +4,7 @@
 
 #include "camera.h"
 
+#include <stdexcept>
 #include <utility>
 
 LavaVk::Camera::Camera(std::string_view name) : Component(name)

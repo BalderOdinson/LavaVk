@@ -5,6 +5,8 @@
 #ifndef LAVAVK_VERTEXOPTIONS_H
 #define LAVAVK_VERTEXOPTIONS_H
 
+#include <unordered_map>
+#include <optional>
 #include <vulkan/vulkan.hpp>
 #include "lava/framework/object.h"
 

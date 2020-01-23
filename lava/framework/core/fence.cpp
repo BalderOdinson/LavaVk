@@ -13,7 +13,7 @@ LavaVk::Core::Fence::Fence(LavaVk::InjectionContext &context)
             options->signaled == FenceState::Signaled ? vk::FenceCreateFlagBits::eSignaled : vk::FenceCreateFlags{}));
 }
 
-bool LavaVk::Core::Fence::wait(uint32_t timeout) const
+bool LavaVk::Core::Fence::wait(uint64_t timeout) const
 {
     return device->getHandle().waitForFences({handle}, true, timeout) == vk::Result::eSuccess;
 }

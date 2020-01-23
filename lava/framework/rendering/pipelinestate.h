@@ -32,9 +32,9 @@ namespace LavaVk
     {
         vk::Bool32 depthClampEnable{VK_FALSE};
         vk::Bool32 rasterizerDiscardEnable{VK_FALSE};
-        vk::PolygonMode polygonMode{VK_POLYGON_MODE_FILL};
-        vk::CullModeFlags cullMode{VK_CULL_MODE_BACK_BIT};
-        vk::FrontFace frontFace{VK_FRONT_FACE_COUNTER_CLOCKWISE};
+        vk::PolygonMode polygonMode{vk::PolygonMode::eFill};
+        vk::CullModeFlags cullMode{vk::CullModeFlagBits::eBack};
+        vk::FrontFace frontFace{vk::FrontFace::eCounterClockwise};
         vk::Bool32 depthBiasEnable{VK_FALSE};
     };
 

@@ -3,6 +3,7 @@
 //
 
 #include "transform.h"
+#include <stdexcept>
 #include "lava/framework/scene-graph/node.h"
 
 LavaVk::Transform::Transform(const LavaVk::SharedNode &node) : node(node)

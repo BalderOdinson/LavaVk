@@ -19,30 +19,30 @@ namespace LavaVk
         class CommandPool
         {
         public:
-            constexpr static ResolveId GlobalPoolId{std::numeric_limits<size_t>::max()};
-            constexpr static ResolveId MainThreadTransferPoolId{std::numeric_limits<size_t>::max() - 1};
-            constexpr static ResolveId WorkerThreadTransferPoolId{std::numeric_limits<size_t>::max() - 2};
+            constexpr static ResolveId GlobalPoolId{(std::numeric_limits<size_t>::max)()};
+            constexpr static ResolveId MainThreadTransferPoolId{(std::numeric_limits<size_t>::max)() - 1};
+            constexpr static ResolveId WorkerThreadTransferPoolId{(std::numeric_limits<size_t>::max)() - 2};
         };
 
         class CommandBuffer
         {
         public:
-            constexpr static ResolveId MainThreadTransferId{std::numeric_limits<size_t>::max()};
-            constexpr static ResolveId WorkerThreadTransferId{std::numeric_limits<size_t>::max() - 1};
+            constexpr static ResolveId MainThreadTransferId{(std::numeric_limits<size_t>::max)()};
+            constexpr static ResolveId WorkerThreadTransferId{(std::numeric_limits<size_t>::max)() - 1};
         };
 
         class Queue
         {
         public:
-            constexpr static ResolveId MainThreadTransferId{std::numeric_limits<size_t>::max()};
-            constexpr static ResolveId WorkerThreadTransferId{std::numeric_limits<size_t>::max() - 1};
+            constexpr static ResolveId MainThreadTransferId{(std::numeric_limits<size_t>::max)()};
+            constexpr static ResolveId WorkerThreadTransferId{(std::numeric_limits<size_t>::max)() - 1};
         };
 
         class MemoryUpdater
         {
         public:
-            constexpr static ResolveId DeviceId{std::numeric_limits<size_t>::max()};
-            constexpr static ResolveId HostId{std::numeric_limits<size_t>::max() - 1};
+            constexpr static ResolveId DeviceId{(std::numeric_limits<size_t>::max)()};
+            constexpr static ResolveId HostId{(std::numeric_limits<size_t>::max)() - 1};
         };
 
         class Device

@@ -26,7 +26,7 @@ LavaVk::Core::SharedFence LavaVk::FencePool::requestFence(Core::FenceState desir
     return fences.back();
 }
 
-bool LavaVk::FencePool::wait(uint32_t timeout) const
+bool LavaVk::FencePool::wait(uint64_t timeout) const
 {
     if (activeFenceCount < 1 || fences.empty())
         return true;
