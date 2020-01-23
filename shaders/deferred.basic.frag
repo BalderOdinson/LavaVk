@@ -1,7 +1,7 @@
 #version 450
 #extension GL_ARB_separate_shader_objects : enable
 
-#define MAX_DEFERRED_LIGHT_COUNT (1000)
+#define MAX_DEFERRED_LIGHT_COUNT (500)
 
 layout(input_attachment_index = 0, binding = 0) uniform subpassInput in_depth;
 layout(input_attachment_index = 1, binding = 1) uniform subpassInput in_albedo;

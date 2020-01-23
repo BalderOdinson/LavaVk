@@ -231,8 +231,6 @@ namespace LavaVk::Core
         vk::CommandBufferLevel level;
         RenderPassBinding currentRenderPass;
         PipelineState pipelineState;
-        std::queue<uint32_t> cachedPipelineQueue;
-        std::unordered_map<uint32_t, SharedPipeline> cachedPipelines;
         ResourceBindingState resourceBindingState;
         std::unordered_map<uint32_t, SharedDescriptorSetLayout> descriptorSetLayoutState;
         SharedMultisamplingOptions multisamplingOptions;

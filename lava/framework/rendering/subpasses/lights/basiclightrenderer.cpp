@@ -65,6 +65,9 @@ void LavaVk::BasicLightRenderer::draw(const LavaVk::Core::SharedCommandBuffer &c
     rasterizationState.cullMode = vk::CullModeFlagBits::eFront;
     commandBuffer->setRasterizationState(rasterizationState);
 
+    // Set vertex input state
+    commandBuffer->setVertexInputState({});
+
     // Populate uniform values
     LightUniform lightUniform{};
 

@@ -5,12 +5,13 @@
 #ifndef DEFERRED_LIGHTSUBPASSOPTIONS_H
 #define DEFERRED_LIGHTSUBPASSOPTIONS_H
 
+#include "lava/framework/rendering/options/subpassoptions.h"
 #include "lava/framework/object.h"
 #include "lava/framework/rendering/subpasses/lightrenderer.h"
 
 namespace LavaVk
 {
-    class LightSubpassOptions : public virtual Object
+    class LightSubpassOptions : public SubpassOptions
     {
     public:
         LightSubpassOptions() = default;

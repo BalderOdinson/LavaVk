@@ -159,6 +159,7 @@ void LavaVk::DeferredRenderTargetOptions::create(vk::Extent3D swapchainExtent, v
             swapchainExtent,
             vk::Format::eD32Sfloat,
             vk::ImageUsageFlagBits::eDepthStencilAttachment |
+            vk::ImageUsageFlagBits::eInputAttachment |
             vk::ImageUsageFlagBits::eTransientAttachment,
             false, vk::MemoryPropertyFlagBits{},
             vk::MemoryPropertyFlagBits::eLazilyAllocated,
@@ -169,6 +170,7 @@ void LavaVk::DeferredRenderTargetOptions::create(vk::Extent3D swapchainExtent, v
             swapchainExtent,
             vk::Format::eR8G8B8A8Unorm,
             vk::ImageUsageFlagBits::eColorAttachment |
+            vk::ImageUsageFlagBits::eInputAttachment |
             vk::ImageUsageFlagBits::eTransientAttachment,
             false, vk::MemoryPropertyFlagBits{},
             vk::MemoryPropertyFlagBits::eLazilyAllocated,
@@ -179,6 +181,7 @@ void LavaVk::DeferredRenderTargetOptions::create(vk::Extent3D swapchainExtent, v
             swapchainExtent,
             vk::Format::eA2R10G10B10UnormPack32,
             vk::ImageUsageFlagBits::eColorAttachment |
+            vk::ImageUsageFlagBits::eInputAttachment |
             vk::ImageUsageFlagBits::eTransientAttachment,
             false, vk::MemoryPropertyFlagBits{},
             vk::MemoryPropertyFlagBits::eLazilyAllocated,
@@ -187,6 +190,12 @@ void LavaVk::DeferredRenderTargetOptions::create(vk::Extent3D swapchainExtent, v
     images.push_back(depthImage);
     images.push_back(albedoImage);
     images.push_back(normalImage);
+    outputAttachments.emplace_back(1);
+    outputAttachments.emplace_back(2);
+    outputAttachments.emplace_back(3);
+    inputAttachments.emplace_back(1);
+    inputAttachments.emplace_back(2);
+    inputAttachments.emplace_back(3);
 }
 
 std::type_index LavaVk::DeferredSpecularRenderTargetOptions::getType() const
@@ -201,6 +210,7 @@ void LavaVk::DeferredSpecularRenderTargetOptions::create(vk::Extent3D swapchainE
             swapchainExtent,
             vk::Format::eD32Sfloat,
             vk::ImageUsageFlagBits::eDepthStencilAttachment |
+            vk::ImageUsageFlagBits::eInputAttachment |
             vk::ImageUsageFlagBits::eTransientAttachment,
             false, vk::MemoryPropertyFlagBits{},
             vk::MemoryPropertyFlagBits::eLazilyAllocated,
@@ -211,6 +221,7 @@ void LavaVk::DeferredSpecularRenderTargetOptions::create(vk::Extent3D swapchainE
             swapchainExtent,
             vk::Format::eR8G8B8A8Unorm,
             vk::ImageUsageFlagBits::eColorAttachment |
+            vk::ImageUsageFlagBits::eInputAttachment |
             vk::ImageUsageFlagBits::eTransientAttachment,
             false, vk::MemoryPropertyFlagBits{},
             vk::MemoryPropertyFlagBits::eLazilyAllocated,
@@ -221,6 +232,7 @@ void LavaVk::DeferredSpecularRenderTargetOptions::create(vk::Extent3D swapchainE
             swapchainExtent,
             vk::Format::eR8G8B8A8Unorm,
             vk::ImageUsageFlagBits::eColorAttachment |
+            vk::ImageUsageFlagBits::eInputAttachment |
             vk::ImageUsageFlagBits::eTransientAttachment,
             false, vk::MemoryPropertyFlagBits{},
             vk::MemoryPropertyFlagBits::eLazilyAllocated,
@@ -231,6 +243,7 @@ void LavaVk::DeferredSpecularRenderTargetOptions::create(vk::Extent3D swapchainE
             swapchainExtent,
             vk::Format::eA2R10G10B10UnormPack32,
             vk::ImageUsageFlagBits::eColorAttachment |
+            vk::ImageUsageFlagBits::eInputAttachment |
             vk::ImageUsageFlagBits::eTransientAttachment,
             false, vk::MemoryPropertyFlagBits{},
             vk::MemoryPropertyFlagBits::eLazilyAllocated,
@@ -240,4 +253,13 @@ void LavaVk::DeferredSpecularRenderTargetOptions::create(vk::Extent3D swapchainE
     images.push_back(albedoImage);
     images.push_back(specularImage);
     images.push_back(normalImage);
+
+    outputAttachments.emplace_back(1);
+    outputAttachments.emplace_back(2);
+    outputAttachments.emplace_back(3);
+    outputAttachments.emplace_back(4);
+    inputAttachments.emplace_back(1);
+    inputAttachments.emplace_back(2);
+    inputAttachments.emplace_back(3);
+    inputAttachments.emplace_back(4);
 }

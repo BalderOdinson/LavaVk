@@ -45,6 +45,11 @@ namespace LavaVk
         void prepare(const SharedScene &scene, const SharedCamera &camera,
                      const Core::SharedCommandBuffer &commandBuffer) override;
 
+        void draw(const Core::SharedCommandBuffer &commandBuffer, const DepthStencilState &depthStencilState,
+                  const std::vector<uint32_t> &inputAttachments, const std::vector<uint32_t> &outputAttachments,
+                  const std::vector<uint32_t> &resolveAttachments, const SharedRenderFrame &currentFrame,
+                  size_t threadIndex) override;
+
         std::type_index getType() const override;
 
     protected:

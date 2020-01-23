@@ -73,7 +73,7 @@ namespace LavaVk
         {
         public:
             constexpr static size_t MaxForwardLightsCount = 16;
-            constexpr static size_t MaxDeferredLightsCount = 1000;
+            constexpr static size_t MaxDeferredLightsCount = 500;
         };
 
         class Particle

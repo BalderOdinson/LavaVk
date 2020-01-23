@@ -100,6 +100,13 @@ void main(void)
     /* vec3 bitangent = cross(norm, tangent);*/
 
     o_color = vec4(material_diffuse, material_alpha);
-    o_specular = vec4(material_specular, 1.0);
-    o_normal = vec4(0.5 * norm + 0.5, 1.0);
+    o_specular = vec4(material_specular, specular_material.specular_color.a / 255);
+    if(material_emissive == vec3(1))
+    {
+        o_normal = vec4(0.5 * norm + 0.5, 0.0);
+    }
+    else
+    {
+        o_normal = vec4(0.5 * norm + 0.5, 1.0);
+    }
 }
