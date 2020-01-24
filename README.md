@@ -10,6 +10,7 @@ Engine/Framework created using Vulkan API
   - [Windows](#windows)
   - [Linux](#linux)
 - [Usage](#usage)
+- [Samples](#samples)
 - [Future plans](#future-plans)
 - [License](#license)
 
@@ -28,7 +29,7 @@ Install latest Vulkan SDK (1.1.124 minimum required) from offical [LunarG websit
 Clone the repo with submodules using the following command:
 
 ```
-git clone --recurse-submodules https://github.com/KhronosGroup/Vulkan-Samples.git
+git clone --recurse-submodules https://github.com/BalderOdinson/LavaVk.git
 ```
 
 ## Build
@@ -252,6 +253,10 @@ int main()
     return EXIT_SUCCESS;
 }
 ```
+## Samples
+
+Samples can be found on this [link](https://github.com/BalderOdinson/ComputerGraphicsLab).
+
 ## Future plans
 
 - Add documentation
