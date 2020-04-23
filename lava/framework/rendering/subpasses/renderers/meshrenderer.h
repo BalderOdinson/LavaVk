@@ -11,6 +11,7 @@
 #include "lava/framework/scene-graph/components/material.h"
 #include "lava/framework/scene-graph/components/submesh.h"
 #include "lava/framework/scene-graph/components/skybox.h"
+#include "lava/framework/constants.h"
 
 namespace LavaVk
 {
@@ -95,7 +96,13 @@ namespace LavaVk
         SharedSkybox skybox;
         SharedResourceCache resourceCache;
         SharedTexture defaultTexture;
-        std::unordered_set<std::string> defaultTextures;
+        std::unordered_set<std::string> defaultTextures{Constants::Texture::Alpha, Constants::Texture::Ambient,
+                                                        Constants::Texture::Bump, Constants::Texture::Diffuse,
+                                                        Constants::Texture::Displacement, Constants::Texture::Emissive,
+                                                        Constants::Texture::Metallic, Constants::Texture::Normal,
+                                                        Constants::Texture::Reflection, Constants::Texture::Roughness,
+                                                        Constants::Texture::SpecularHighlight,
+                                                        Constants::Texture::Specular, Constants::Texture::Cubemap};
         std::unordered_map<vk::ShaderStageFlagBits, Core::SharedShaderModuleOptions> shaders;
 
     private:

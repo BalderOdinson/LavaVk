@@ -11,6 +11,7 @@
 #include "lava/scene-graph.h"
 #include "lava/loaders.h"
 #include "lava/rendering.h"
+#include <omp.h>
 
 LavaVk::UniqueApplication LavaVk::Application::instance = nullptr;
 
@@ -254,6 +255,16 @@ void LavaVk::Application::installConfigurations(LavaVk::DIContainer &diContainer
                                               return new MipmapsOptions(std::numeric_limits<uint32_t>::max(),
                                                                         LevelOfDetail::VeryHigh);
                                           });
+
+    diContainer.addOption<ThreadingOptions>(
+            []()
+            {
+#ifdef NDEBUG
+                return new ThreadingOptions(omp_get_num_procs());
+#else
+                return new ThreadingOptions();
+#endif
+            });
 }
 
 LavaVk::Window &LavaVk::Application::getWindow()
@@ -394,7 +405,7 @@ void LavaVk::Application::draw()
         barrier.execute();
 
         {
-            auto extent = renderTarget->getExtent();
+            /*auto extent = renderTarget->getExtent();
 
             vk::Viewport viewport{};
             viewport.width = static_cast<float>(extent.width);
@@ -405,7 +416,7 @@ void LavaVk::Application::draw()
 
             vk::Rect2D scissor{};
             scissor.extent = extent;
-            commandBuffer->setScissor(0, {scissor});
+            commandBuffer->setScissor(0, {scissor});*/
 
             auto beginRenderToken = renderPipeline->draw(commandBuffer, renderTarget);
         }
@@ -499,7 +510,8 @@ void LavaVk::Application::updateResources(bool waitOnMainThread)
     auto queue = container.resolve<Core::Queue>(Constants::Queue::MainThreadTransferId);
     auto cmd = container.resolve<Core::CommandBuffer>(Constants::CommandBuffer::MainThreadTransferId);
     auto fence = container.resolve<Core::Fence>();
-    queue->createSubmitRequest().setFence(fence->getHandle()).submitInfo().addCommandBuffer(cmd->getHandle()).add().submit();
+    queue->createSubmitRequest().setFence(fence->getHandle()).submitInfo().addCommandBuffer(
+            cmd->getHandle()).add().submit();
     if (waitOnMainThread)
         fence->wait();
     else

@@ -79,6 +79,12 @@ LavaVk::Core::CommandBuffer::begin(const vk::CommandBufferUsageFlags &flags, con
         inheritanceInfo.subpass = primaryBuffer->getCurrentSubpassIndex();
 
         info.pInheritanceInfo = &inheritanceInfo;
+
+        if(flags & vk::CommandBufferUsageFlagBits::eRenderPassContinue)
+        {
+            pipelineState.setColorBlendState(primaryBuffer->pipelineState.getColorBlendState());
+            pipelineState.setMultisampleState(primaryBuffer->pipelineState.getMultisampleState());
+        }
     }
 
     getHandle().begin(info);
@@ -154,7 +160,7 @@ LavaVk::Core::CommandBuffer::beginRenderPass(const LavaVk::SharedRenderTarget &r
 
     handle.beginRenderPass(beginInfo, contents);
 
-    // Update blend state attachments for first subpass
+  /*  // Update blend state attachments for first subpass
     auto blendState = pipelineState.getColorBlendState();
     blendState.attachments.resize(
             currentRenderPass.renderPass->getColorOutputCount(pipelineState.getSubpassIndex()));
@@ -163,24 +169,24 @@ LavaVk::Core::CommandBuffer::beginRenderPass(const LavaVk::SharedRenderTarget &r
     // Update multisample state attachments for first subpass.
     auto multisampleState = pipelineState.getMultisampleState();
     multisampleState.rasterizationSamples = multisamplingOptions->samples;
-    pipelineState.setMultisampleState(multisampleState);
+    pipelineState.setMultisampleState(multisampleState);*/
 
     return LavaVk::Core::BeginRenderPassToken(std::dynamic_pointer_cast<CommandBuffer>(shared_from_this()));
 }
 
-void LavaVk::Core::CommandBuffer::nextSubpass()
+void LavaVk::Core::CommandBuffer::nextSubpass(vk::SubpassContents contents)
 {
     // Increment subpass index
     pipelineState.setSubpassIndex(pipelineState.getSubpassIndex() + 1);
 
-    // Update blend state attachments
+/*    // Update blend state attachments
     auto blendState = pipelineState.getColorBlendState();
     blendState.attachments.resize(currentRenderPass.renderPass->getColorOutputCount(pipelineState.getSubpassIndex()));
     pipelineState.setColorBlendState(blendState);
 
     auto multisampleState = pipelineState.getMultisampleState();
     multisampleState.rasterizationSamples = multisamplingOptions->samples;
-    pipelineState.setMultisampleState(multisampleState);
+    pipelineState.setMultisampleState(multisampleState);*/
 
     // Reset descriptor sets
     resourceBindingState.reset();
@@ -189,7 +195,7 @@ void LavaVk::Core::CommandBuffer::nextSubpass()
     // Clear stored push constants
     storedPushConstants.clear();
 
-    handle.nextSubpass(vk::SubpassContents::eInline);
+    handle.nextSubpass(contents);
 }
 
 void LavaVk::Core::CommandBuffer::clear(const vk::ClearAttachment &info, vk::ClearRect rect)

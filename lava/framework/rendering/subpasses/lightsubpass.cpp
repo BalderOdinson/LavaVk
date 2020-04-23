@@ -22,6 +22,7 @@ void LavaVk::LightSubpass::prepare(const LavaVk::Core::SharedCommandBuffer &comm
 
 void LavaVk::LightSubpass::draw(const LavaVk::Core::SharedCommandBuffer &commandBuffer)
 {
+    configurator->setDynamicStates(commandBuffer);
     renderer->draw(commandBuffer, getDepthStencilState(), getInputAttachments(), getOutputAttachments(),
                    getResolveAttachments(), getRenderContext()->getActiveFrame(), 0);
 }
@@ -29,4 +30,9 @@ void LavaVk::LightSubpass::draw(const LavaVk::Core::SharedCommandBuffer &command
 std::type_index LavaVk::LightSubpass::getType() const
 {
     return typeid(LightSubpass);
+}
+
+vk::SubpassContents LavaVk::LightSubpass::getSubpassContents()
+{
+    return vk::SubpassContents::eInline;
 }

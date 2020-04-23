@@ -15,6 +15,7 @@
 #include "pipelinestate.h"
 #include "lava/framework/scene-graph/components/light.h"
 #include "lava/framework/core/shadermodule.h"
+#include "options/dynamicstateconfigurator.h"
 
 namespace LavaVk
 {
@@ -52,9 +53,13 @@ namespace LavaVk
         const std::vector<uint32_t> &getResolveAttachments() const;
         void setResolveAttachments(std::vector<uint32_t> resolve);
 
+        virtual vk::SubpassContents getSubpassContents() = 0;
+
     protected:
         SharedResourceCache resourceCache;
         SharedRenderContext renderContext;
+
+        SharedDynamicStateConfigurator configurator;
 
     private:
         DepthStencilState depthStencilState{};

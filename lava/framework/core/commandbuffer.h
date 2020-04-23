@@ -117,9 +117,9 @@ namespace LavaVk::Core
         beginRenderPass(const SharedRenderTarget &renderTarget, const std::vector<LoadStoreInfo> &loadStoreInfos,
                         const std::vector<vk::ClearValue> &clearValues,
                         const std::vector<SharedSubpass> &subpasses,
-                        vk::SubpassContents contents = vk::SubpassContents::eInline);
+                        vk::SubpassContents contents);
 
-        void nextSubpass();
+        void nextSubpass(vk::SubpassContents contents);
 
         void executeCommands(const SharedCommandBuffer &secondaryCommandBuffer);
 

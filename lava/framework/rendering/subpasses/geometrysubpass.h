@@ -31,6 +31,8 @@ namespace LavaVk
         /// \brief Record draw commands
         void draw(const Core::SharedCommandBuffer &commandBuffer) override;
 
+        vk::SubpassContents getSubpassContents() override;
+
         std::type_index getType() const override;
 
     protected:

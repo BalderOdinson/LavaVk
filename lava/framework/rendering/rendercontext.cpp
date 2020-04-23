@@ -17,6 +17,7 @@ LavaVk::RenderContext::RenderContext(LavaVk::InjectionContext &context)
     allocator = context.container.resolve<Core::Allocator>();
     logger = context.container.resolve<Logger>();
     resourceCache = context.container.resolve<ResourceCache>();
+    threadingOptions = context.container.option<ThreadingOptions>();
 }
 
 
@@ -26,7 +27,7 @@ LavaVk::RenderContext::~RenderContext()
         swapchain->recreated().unsubscribe(swapchainRecreatedToken);
 }
 
-void LavaVk::RenderContext::prepare(size_t threads)
+void LavaVk::RenderContext::prepare()
 {
     device->waitIdle();
 
@@ -37,14 +38,13 @@ void LavaVk::RenderContext::prepare(size_t threads)
     {
         Application::instance->container.option<RenderTargetOptions>()->recreate(swapchainImage);
         frames.emplace_back(Application::instance->container.resolve<RenderFrame, RenderFrameOptions>(
-                Application::instance->container.resolve<RenderTarget>(), threads));
+                Application::instance->container.resolve<RenderTarget>(), threadingOptions->getThreadCount()));
     }
 
     // Subscribe on surface change.
     swapchain->bindWindow(window);
     swapchainRecreatedToken = swapchain->recreated().subscribe([&](Object &sender)
                                                                { recreate(); });
-    threadCount = threads;
     prepared = true;
 }
 
@@ -64,7 +64,7 @@ void LavaVk::RenderContext::recreate()
         else
             // Create a new frame if the new swapchain has more images than current frames
             frames.emplace_back(Application::instance->container.resolve<RenderFrame, RenderFrameOptions>(
-                    Application::instance->container.resolve<RenderTarget>(), threadCount));
+                    Application::instance->container.resolve<RenderTarget>(), threadingOptions->getThreadCount()));
 
         ++frameIt;
     }
@@ -248,4 +248,9 @@ void LavaVk::RenderContext::handleSurfaceChanges()
 const LavaVk::SharedRenderFrame &LavaVk::RenderContext::getRenderFrame(uint32_t index) const
 {
     return frames[index];
+}
+
+const LavaVk::Core::SharedQueue &LavaVk::RenderContext::getRenderQueue() const
+{
+    return queue;
 }

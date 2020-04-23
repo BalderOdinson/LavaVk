@@ -16,6 +16,7 @@
 #include "renderframe.h"
 #include "lava/framework/platform/window.h"
 #include "lava/framework/event-system/event.h"
+#include "lava/framework/threadingoptions.h"
 
 namespace LavaVk
 {
@@ -36,8 +37,7 @@ namespace LavaVk
         RenderContext &operator=(RenderContext &&) = delete;
 
         /// \brief Prepares the RenderFrames for rendering
-        /// \param threadCount The number of threads in the application, necessary to allocate this many resource pools for each RenderFrame
-        void prepare(size_t threadCount = 1);
+        void prepare();
 
         /// \brief Recreates the RenderFrames, called after every update
         void recreate();
@@ -84,6 +84,8 @@ namespace LavaVk
 
         const SharedRenderFrame &getRenderFrame(uint32_t index) const;
 
+        const Core::SharedQueue &getRenderQueue() const;
+
         Core::SharedSemaphore requestSemaphore();
 
 	    /// \brief Handles surface changes, only applicable if the render_context makes use of a swapchain
@@ -108,7 +110,7 @@ namespace LavaVk
         /// Whether a frame is active or not
         bool frameActive{false};
         vk::SurfaceTransformFlagBitsKHR preTransform{vk::SurfaceTransformFlagBitsKHR::eIdentity};
-        size_t threadCount{1};
+        SharedThreadingOptions threadingOptions;
         EventToken swapchainRecreatedToken;
     };
 

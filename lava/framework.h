@@ -21,5 +21,6 @@
 #include "framework/resourcecache.h"
 #include "framework/sceneloader.h"
 #include "framework/loadingscreenloader.h"
+#include "framework/threadingoptions.h"
 
 #endif //LAVAVK_FRAMEWORK_H

@@ -210,7 +210,6 @@ std::type_index LavaVk::RenderFrame::getType() const
     return typeid(RenderFrame);
 }
 
-
 LavaVk::CommandPoolIndex::CommandPoolIndex(uint32_t queueFamilyIndex, LavaVk::Core::CommandBuffer::ResetMode resetMode)
         : queueFamilyIndex(queueFamilyIndex), resetMode(resetMode)
 {

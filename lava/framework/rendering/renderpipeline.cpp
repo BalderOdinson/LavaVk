@@ -51,8 +51,7 @@ std::vector<LavaVk::SharedSubpass> &LavaVk::RenderPipeline::getSubpasses()
 }
 
 LavaVk::Core::BeginRenderPassToken LavaVk::RenderPipeline::draw(const LavaVk::Core::SharedCommandBuffer &commandBuffer,
-                                                                const LavaVk::SharedRenderTarget &renderTarget,
-                                                                vk::SubpassContents contents)
+                                                                const LavaVk::SharedRenderTarget &renderTarget)
 {
     Core::BeginRenderPassToken token;
     for (size_t i = 0; i < subpasses.size(); ++i)
@@ -61,9 +60,9 @@ LavaVk::Core::BeginRenderPassToken LavaVk::RenderPipeline::draw(const LavaVk::Co
         auto subpass = subpasses[i];
         subpass->updateRenderTargetAttachments();
         if (i == 0)
-            token = commandBuffer->beginRenderPass(renderTarget, loadStore, clearValue, subpasses, contents);
+            token = commandBuffer->beginRenderPass(renderTarget, loadStore, clearValue, subpasses, subpass->getSubpassContents());
         else
-            commandBuffer->nextSubpass();
+            commandBuffer->nextSubpass(subpass->getSubpassContents());
         subpass->draw(commandBuffer);
     }
 

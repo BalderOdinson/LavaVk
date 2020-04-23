@@ -9,7 +9,6 @@
 #include "lava/framework/dependency-injection/dicontainer.h"
 #include "lava/framework/scene-graph/scene.h"
 #include "lava/framework/scene-graph/components/mesh.h"
-#include "lava/framework/constants.h"
 #include "lava/framework/platform/application.h"
 #include "lava/framework/resourcecache.h"
 
@@ -139,23 +138,13 @@ LavaVk::MeshRenderer::draw(const Core::SharedCommandBuffer &commandBuffer,
             make<Core::PipelineLayoutOptions>(getShaderModules()));
 
     commandBuffer->bindPipelineLayout(pipelineLayout);
+
+    std::unordered_set<std::string> defaultTextures;
     updateUniforms(commandBuffer, {component.first, submesh}, currentFrame, threadIndex);
 
     for (size_t set = 0; set < getSetCount(); ++set)
     {
         auto descriptorSetLayout = pipelineLayout->getSetLayout(set);
-
-        for (auto &texture : submesh->getMaterial()->textures)
-        {
-            vk::DescriptorSetLayoutBinding layoutBinding;
-
-            if (descriptorSetLayout->tryGetLayoutBinding(texture.first, layoutBinding))
-            {
-                commandBuffer->bindImage(texture.second->getImage()->getVkImageView(),
-                                         texture.second->getSampler()->getVkSampler(),
-                                         set, layoutBinding.binding, 0);
-            }
-        }
 
         for (auto &defaultTextureName : defaultTextures)
         {
@@ -165,6 +154,18 @@ LavaVk::MeshRenderer::draw(const Core::SharedCommandBuffer &commandBuffer,
             {
                 commandBuffer->bindImage(defaultTexture->getImage()->getVkImageView(),
                                          defaultTexture->getSampler()->getVkSampler(),
+                                         set, layoutBinding.binding, 0);
+            }
+        }
+
+        for (auto &texture : submesh->getMaterial()->textures)
+        {
+            vk::DescriptorSetLayoutBinding layoutBinding;
+
+            if (descriptorSetLayout->tryGetLayoutBinding(texture.first, layoutBinding))
+            {
+                commandBuffer->bindImage(texture.second->getImage()->getVkImageView(),
+                                         texture.second->getSampler()->getVkSampler(),
                                          set, layoutBinding.binding, 0);
             }
         }
@@ -239,63 +240,39 @@ void LavaVk::MeshRenderer::updateUniforms(const Core::SharedCommandBuffer &comma
 
     if (material->textures.find(Constants::Texture::Alpha) != material->textures.end())
         flags = flags | MaterialFlags::HasAlpha;
-    else
-        defaultTextures.insert(Constants::Texture::Alpha);
 
     if (material->textures.find(Constants::Texture::Ambient) != material->textures.end())
         flags = flags | MaterialFlags::HasAmbient;
-    else
-        defaultTextures.insert(Constants::Texture::Ambient);
 
     if (material->textures.find(Constants::Texture::Bump) != material->textures.end())
         flags = flags | MaterialFlags::HasBump;
-    else
-        defaultTextures.insert(Constants::Texture::Bump);
 
     if (material->textures.find(Constants::Texture::Diffuse) != material->textures.end())
         flags = flags | MaterialFlags::HasDiffuse;
-    else
-        defaultTextures.insert(Constants::Texture::Diffuse);
 
     if (material->textures.find(Constants::Texture::Displacement) != material->textures.end())
         flags = flags | MaterialFlags::HasDisplacement;
-    else
-        defaultTextures.insert(Constants::Texture::Displacement);
 
     if (material->textures.find(Constants::Texture::Emissive) != material->textures.end())
         flags = flags | MaterialFlags::HasEmissive;
-    else
-        defaultTextures.insert(Constants::Texture::Emissive);
 
     if (material->textures.find(Constants::Texture::Metallic) != material->textures.end())
         flags = flags | MaterialFlags::HasMetallic;
-    else
-        defaultTextures.insert(Constants::Texture::Metallic);
 
     if (material->textures.find(Constants::Texture::Normal) != material->textures.end())
         flags = flags | MaterialFlags::HasNormal;
-    else
-        defaultTextures.insert(Constants::Texture::Normal);
 
     if (material->textures.find(Constants::Texture::Reflection) != material->textures.end())
         flags = flags | MaterialFlags::HasReflection;
-    else
-        defaultTextures.insert(Constants::Texture::Reflection);
 
     if (material->textures.find(Constants::Texture::Roughness) != material->textures.end())
         flags = flags | MaterialFlags::HasRoughness;
-    else
-        defaultTextures.insert(Constants::Texture::Roughness);
 
     if (material->textures.find(Constants::Texture::SpecularHighlight) != material->textures.end())
         flags = flags | MaterialFlags::HasSpecularHighlight;
-    else
-        defaultTextures.insert(Constants::Texture::SpecularHighlight);
 
     if (material->textures.find(Constants::Texture::Specular) != material->textures.end())
         flags = flags | MaterialFlags::HasSpecular;
-    else
-        defaultTextures.insert(Constants::Texture::Specular);
 
     if (material->textures.find(Constants::Texture::Cubemap) != material->textures.end())
         flags = flags | MaterialFlags::HasCubemap;
@@ -304,8 +281,6 @@ void LavaVk::MeshRenderer::updateUniforms(const Core::SharedCommandBuffer &comma
         flags = flags | MaterialFlags::HasCubemap;
         material->textures[Constants::Texture::Cubemap] = skybox->textures[Constants::Texture::Cubemap];
     }
-    else
-        defaultTextures.insert(Constants::Texture::Cubemap);
 
     std::vector<uint8_t> flagsData(sizeof(uint32_t));
     *reinterpret_cast<uint32_t *>(flagsData.data()) = static_cast<uint32_t>(flags);

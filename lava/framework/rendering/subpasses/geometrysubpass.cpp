@@ -3,6 +3,7 @@
 //
 
 #include <set>
+#include <omp.h>
 #include "geometrysubpass.h"
 #include "lava/framework/rendering/options/subpassoptions.h"
 #include "lava/framework/platform/application.h"
@@ -32,13 +33,47 @@ void LavaVk::GeometrySubpass::prepare(const Core::SharedCommandBuffer &commandBu
 
 void LavaVk::GeometrySubpass::draw(const LavaVk::Core::SharedCommandBuffer &commandBuffer)
 {
-    for (auto &component : components)
-        renderers[component.first]->draw(commandBuffer, component.second, getDepthStencilState(), getInputAttachments(),
-                                         getOutputAttachments(), getResolveAttachments(),
-                                         getRenderContext()->getActiveFrame(), 0);
+
+    auto queue = Application::instance->container.resolve<Core::Queue>();
+    auto threadingOptions = Application::instance->container.option<ThreadingOptions>();
+
+    std::vector<Core::SharedCommandBuffer> cmdBuffers(threadingOptions->getThreadCount());
+
+    {
+        std::vector<Core::BeginToken> tokens(cmdBuffers.size());
+
+        for (uint32_t i = 0; i < threadingOptions->getThreadCount(); ++i)
+        {
+            cmdBuffers[i] = getRenderContext()->getActiveFrame()->requestCommandBuffer(queue,
+                                                                                       Core::CommandBuffer::ResetMode::ResetIndividually,
+                                                                                       vk::CommandBufferLevel::eSecondary,
+                                                                                       i);
+            tokens[i] = cmdBuffers[i]->begin(vk::CommandBufferUsageFlagBits::eOneTimeSubmit |
+                                             vk::CommandBufferUsageFlagBits::eRenderPassContinue,
+                                             commandBuffer);
+        }
+
+#pragma omp parallel for default(none), shared(cmdBuffers, commandBuffer)
+        for (int i = 0; i < static_cast<int>(components.size()); ++i)
+        {
+            configurator->setDynamicStates(cmdBuffers[omp_get_thread_num()]);
+            renderers[components[i].first]->draw(cmdBuffers[omp_get_thread_num()], components[i].second,
+                                                 getDepthStencilState(),
+                                                 getInputAttachments(),
+                                                 getOutputAttachments(), getResolveAttachments(),
+                                                 getRenderContext()->getActiveFrame(), omp_get_thread_num());
+        }
+    }
+
+    commandBuffer->executeCommands(cmdBuffers);
 }
 
 std::type_index LavaVk::GeometrySubpass::getType() const
 {
     return typeid(GeometrySubpass);
+}
+
+vk::SubpassContents LavaVk::GeometrySubpass::getSubpassContents()
+{
+    return vk::SubpassContents::eSecondaryCommandBuffers;
 }

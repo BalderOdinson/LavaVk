@@ -13,6 +13,7 @@ LavaVk::Subpass::Subpass(LavaVk::InjectionContext &context)
     resourceCache = context.container.resolve<ResourceCache>();
     renderContext = context.container.resolve<RenderContext>();
     auto options = context.container.option<SubpassOptions>(context);
+    configurator = options->configurator;
 }
 
 void LavaVk::Subpass::updateRenderTargetAttachments()

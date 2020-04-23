@@ -10,3 +10,11 @@ std::type_index LavaVk::SubpassOptions::getType() const
 {
     return typeid(SubpassOptions);
 }
+
+LavaVk::SubpassOptions::SubpassOptions() : configurator(new DynamicStateConfigurator())
+{
+}
+
+LavaVk::SubpassOptions::SubpassOptions(LavaVk::SharedDynamicStateConfigurator configurator) : configurator(std::move(
+        configurator))
+{}

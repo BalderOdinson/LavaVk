@@ -51,8 +51,7 @@ namespace LavaVk
 
         /// \brief Record draw commands for each Subpass.
         Core::BeginRenderPassToken
-        draw(const Core::SharedCommandBuffer &commandBuffer, const SharedRenderTarget &renderTarget,
-             vk::SubpassContents contents = vk::SubpassContents::eInline);
+        draw(const Core::SharedCommandBuffer &commandBuffer, const SharedRenderTarget &renderTarget);
 
         /// \return Subpass currently being recorded, or the first one
         /// if drawing has not started.
